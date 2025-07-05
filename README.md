@@ -2,18 +2,73 @@
 
 这是一个用Go语言编写的传感器数据接收和解析服务器，专门用于接收和展示来自[Sensor Logger](https://www.tszheichoi.com/sensorlogger)应用的传感器数据。
 
-## 功能特点
+## 🎯 项目概述
 
-✅ **完整的数据解析** - 支持解析所有常见的传感器类型
-✅ **人类友好的展示** - 将原始数据转换为易于理解的格式
-✅ **实时数据仪表板** - 提供美观的Web界面查看传感器数据
-✅ **数据持久化** - 自动保存所有接收到的数据为JSON文件
-✅ **MongoDB支持** - 支持将数据存储到MongoDB数据库
-✅ **多传感器支持** - 支持加速度计、陀螺仪、磁力计等多种传感器
-✅ **中文界面** - 完全中文化的用户界面
-✅ **RESTful API** - 提供完整的API接口访问数据
+本项目成功实现了一个完整的传感器数据接收和解析服务器，可以接收来自Sensor Logger应用的传感器数据，并将其转换为人类友好的格式进行展示。
 
-## 支持的传感器类型
+## ✅ 功能特点
+
+- ✅ **完整的数据解析** - 支持解析所有常见的传感器类型
+- ✅ **人类友好的展示** - 将原始数据转换为易于理解的格式
+- ✅ **实时数据仪表板** - 提供美观的Web界面查看传感器数据
+- ✅ **数据持久化** - 自动保存所有接收到的数据为JSON文件
+- ✅ **MongoDB支持** - 支持将数据存储到MongoDB数据库
+- ✅ **多传感器支持** - 支持加速度计、陀螺仪、磁力计等多种传感器
+- ✅ **中文界面** - 完全中文化的用户界面
+- ✅ **RESTful API** - 提供完整的API接口访问数据
+- ✅ **结构化日志** - 使用Go 1.21+ slog结构化日志系统
+- ✅ **环境配置** - 支持开发/生产环境区分
+- ✅ **Docker支持** - 提供完整的容器化部署方案
+- ✅ **构建系统** - 支持多平台构建和版本管理
+
+## 🚀 快速开始
+
+### 使用构建工具
+
+项目提供了完整的构建系统，支持多种操作系统：
+
+**Linux/macOS:**
+```bash
+# 查看所有可用命令
+make help
+
+# 构建应用程序
+make build
+
+# 运行应用程序
+make run
+
+# 运行测试
+make test
+```
+
+**Windows:**
+```cmd
+# 查看所有可用命令
+make.bat help
+
+# 构建应用程序
+make.bat build
+
+# 运行应用程序
+make.bat run
+
+# 运行测试
+make.bat test
+```
+
+### 传统方式
+
+```bash
+# 直接运行
+go run main.go
+
+# 构建后运行
+go build -o sensor-logger-server .
+./sensor-logger-server
+```
+
+## 📊 支持的传感器类型
 
 | 传感器类型 | 描述 | 数据示例 |
 |-----------|------|----------|
@@ -28,9 +83,9 @@
 | 位置 (location) | GPS位置信息 | 经纬度、海拔、速度等 |
 | 气压计 (barometer) | 大气压力 | 气压 (hPa)、气压高度 (米) |
 
-## 快速开始
+## 🔧 配置说明
 
-### 1. 配置应用（可选）
+### 环境配置
 
 项目支持通过`.env`文件进行配置：
 
@@ -48,64 +103,65 @@ cp env.example .env
 |--------|--------|------|
 | `SERVER_PORT` | 18000 | 服务器端口 |
 | `SERVER_HOST` | (空) | 服务器主机，空表示监听所有接口 |
+| `ENVIRONMENT` | dev | 运行环境 (dev/development/prod/production) |
+| `LOG_LEVEL` | info | 日志级别 (debug/info/warn/error) |
+| `ENABLE_FILE_LOG` | true | 是否启用文件日志 |
+| `DATA_DIR` | ./data | 数据文件存储目录 |
+| `MAX_DATA_STORE` | 100 | 内存中最大数据存储条数 |
 | `MONGO_URI` | mongodb://localhost:27017 | MongoDB连接URI |
 | `MONGO_DATABASE` | sensor_logger | MongoDB数据库名称 |
 | `MONGO_TIMEOUT` | 10 | MongoDB连接超时（秒） |
-| `MAX_DATA_STORE` | 100 | 内存中最大数据存储条数 |
-| `ENABLE_LOGGING` | true | 是否启用日志输出 |
-| `LOG_LEVEL` | info | 日志级别 (debug/info/warn/error) |
-| `DATA_DIR` | ./data | 数据文件存储目录 |
-| `ENABLE_FILE_LOG` | true | 是否启用文件日志 |
 
-### 2. 安装MongoDB（可选）
+### 日志系统
 
-如果要使用MongoDB数据库存储功能：
+项目使用Go 1.21+的结构化日志系统，支持：
 
-**Windows:**
-1. 下载并安装[MongoDB Community Server](https://www.mongodb.com/try/download/community)
-2. 启动MongoDB服务：`net start MongoDB`
+**开发环境:**
+- 文本格式输出，易于阅读
+- 包含源码文件和行号信息
+- 人类友好的时间格式
 
-**Linux/macOS:**
-```bash
-# Ubuntu/Debian
-sudo apt-get install mongodb
+**生产环境:**
+- JSON格式输出，便于日志收集
+- 标准RFC3339时间格式
+- 结构化字段便于查询
 
-# macOS (使用Homebrew)
-brew install mongodb-community
+## 🐳 Docker部署
 
-# 启动MongoDB
-sudo systemctl start mongod  # Linux
-brew services start mongodb-community  # macOS
-```
-
-**Docker:**
-```bash
-docker run -d -p 27017:27017 --name mongodb mongo:latest
-```
-
-### 3. 启动服务器
+### 快速部署
 
 ```bash
-go run main.go
+# 使用Docker Compose（推荐）
+docker-compose up -d
+
+# 查看日志
+docker-compose logs -f
+
+# 停止服务
+docker-compose down
 ```
 
-服务器将在端口 18000 上启动，你会看到类似以下的输出：
+### 开发环境
 
-```
-=== 传感器日志服务器 ===
-服务器启动在端口 18000
+```bash
+# 启动开发环境
+docker-compose -f docker-compose.dev.yml up -d
 
-本机IP地址:
-  192.168.1.100 (以太网)
-  192.168.1.101 (Wi-Fi)
-
-请在Sensor Logger应用中设置推送URL为: http://[你的IP地址]:18000/data
-使用 'Tap to Test Pushing' 按钮测试连接
-访问 http://[你的IP地址]:18000/dashboard 查看数据仪表板
-========================
+# 查看日志
+docker-compose -f docker-compose.dev.yml logs -f
 ```
 
-### 4. 配置Sensor Logger应用
+### 手动Docker构建
+
+```bash
+# 构建镜像
+docker build -t sensor-logger-server:latest .
+
+# 运行容器
+docker run -p 18000:18000 sensor-logger-server:latest
+```
+
+## 📱 配置Sensor Logger应用
 
 1. 在手机上打开Sensor Logger应用
 2. 进入设置页面（点击齿轮图标）
@@ -113,15 +169,17 @@ go run main.go
 4. 输入：`http://[你的服务器IP]:18000/data`
 5. 点击"Tap to Test Pushing"按钮测试连接
 
-### 5. 查看数据
+## 🌐 Web界面和API
+
+### 访问地址
 
 - **主页**: `http://[你的IP]:18000/` - 服务器状态和配置信息
 - **数据仪表板**: `http://[你的IP]:18000/dashboard` - 实时传感器数据展示
 - **API接口**: `http://[你的IP]:18000/api/data` - 获取JSON格式的所有数据
 
-## 数据展示示例
+### 数据展示示例
 
-### 加速度计数据
+#### 加速度计数据
 ```
 传感器类型: accelerometer
 时间: 2025-07-05 15:30:25.123
@@ -132,7 +190,7 @@ Y轴加速度: -0.004899 m/s² (Y轴方向的加速度)
 Z轴加速度: 0.089095 m/s² (Z轴方向的加速度)
 ```
 
-### 陀螺仪数据
+#### 陀螺仪数据
 ```
 传感器类型: gyroscope
 时间: 2025-07-05 15:30:25.147
@@ -143,7 +201,7 @@ Y轴角速度: -0.031957 rad/s (绕Y轴的角速度)
 Z轴角速度: 0.016911 rad/s (绕Z轴的角速度)
 ```
 
-### 磁力计数据
+#### 磁力计数据
 ```
 传感器类型: magnetometer
 时间: 2025-07-05 15:30:25.186
@@ -152,7 +210,20 @@ Z轴角速度: 0.016911 rad/s (绕Z轴的角速度)
 磁方位角: 137.28 度 (相对于磁北的方位角)
 ```
 
-## 文件结构
+#### 位置数据
+```
+传感器类型: location
+时间: 2025-07-05 15:30:25.200
+精度: 高精度
+
+纬度: 39.90419800 度 (地理纬度)
+经度: 116.40739600 度 (地理经度)
+海拔: 43.20 米 (海拔高度)
+速度: 0.00 m/s (移动速度)
+方位角: 0.00 度 (移动方位角)
+```
+
+## 📁 项目结构
 
 ```
 sensor-logger-server/
@@ -162,23 +233,29 @@ sensor-logger-server/
 ├── parser.go                        # 传感器数据解析
 ├── handlers.go                      # HTTP处理程序
 ├── utils.go                         # 工具函数
-├── main_test.go                     # 核心功能测试
-├── handlers_test.go                 # HTTP处理程序测试
-├── config_test.go                   # 配置功能测试
+├── logger.go                        # 日志系统
 ├── database.go                      # MongoDB数据库操作
-├── database_test.go                 # 数据库功能测试
+├── *_test.go                        # 测试文件
+├── Makefile                         # 构建脚本（Linux/macOS）
+├── make.bat                         # 构建脚本（Windows）
+├── .air.toml                        # 热重载配置
+├── Dockerfile                       # Docker构建文件
+├── docker-compose.yml               # Docker Compose配置
+├── docker-compose.dev.yml           # 开发环境配置
 ├── go.mod                           # Go模块文件
 ├── README.md                        # 说明文档
+├── BUILD.md                         # 构建说明文档
 ├── env.example                      # 配置文件模板
-├── .env                             # 配置文件（可选）
-├── run_tests.bat                    # 测试运行脚本
+├── .gitignore                       # Git忽略文件
+├── .gitattributes                   # Git属性文件
 ├── data/                            # 数据存储目录
+│   ├── logs/                        # 日志文件目录
 │   └── sensor_data_*.json           # 传感器数据文件
 └── temp/                            # 测试数据目录
     └── sensor_data_*.json           # 测试用传感器数据
 ```
 
-## API接口
+## 🔌 API接口
 
 ### POST /data
 接收来自Sensor Logger应用的传感器数据。
@@ -241,19 +318,34 @@ GET /api/db/data?limit=100&device=test-device&sensor=accelerometer
 - 传感器类型数量
 - 最新数据时间
 
-## 数据解析特性
+## 🏗️ 技术架构
 
-### 时间戳处理
+### 数据流程
+1. **接收**: Sensor Logger应用通过HTTP POST发送JSON数据到`/data`端点
+2. **解析**: 服务器解析JSON数据，提取传感器信息
+3. **转换**: 将原始数据转换为人类可读格式，添加单位和描述
+4. **存储**: 原始数据保存为文件，解析后数据存储在内存中
+5. **展示**: 通过Web界面和API提供数据访问
+
+### 核心组件
+- **SensorMessage**: 完整消息结构体
+- **SensorReading**: 单个传感器读数结构体
+- **ParsedSensorData**: 解析后的数据结构体
+- **HumanReadableSensorData**: 人类可读的传感器数据结构体
+
+### 数据解析特性
+
+#### 时间戳处理
 - 自动将纳秒时间戳转换为可读的日期时间格式
 - 支持时区转换和本地化显示
 
-### 精度标识
+#### 精度标识
 - 0: 不可靠
 - 1: 低精度
 - 2: 中等精度
 - 3: 高精度
 
-### 单位转换
+#### 单位转换
 所有数据都包含适当的单位标识：
 - 加速度: m/s²
 - 角速度: rad/s
@@ -262,7 +354,7 @@ GET /api/db/data?limit=100&device=test-device&sensor=accelerometer
 - 距离: 米
 - 压力: hPa
 
-## 数据存储
+## 💾 数据存储
 
 ### 文件存储
 - 所有接收到的原始数据都会保存为JSON文件（可通过`ENABLE_FILE_LOG`配置）
@@ -281,57 +373,24 @@ GET /api/db/data?limit=100&device=test-device&sensor=accelerometer
 - 自动创建索引以优化查询性能
 - 支持设备信息的自动更新和统计
 
-## 技术特点
-
-- **高性能**: 使用Go语言编写，处理速度快
-- **并发安全**: 支持多个设备同时发送数据
-- **容错性强**: 即使数据解析失败也不会影响数据接收
-- **扩展性好**: 易于添加新的传感器类型支持
-- **跨平台**: 支持Windows、Linux、macOS
-
-## 故障排除
-
-### 连接问题
-1. 确保手机和服务器在同一网络中
-2. 检查防火墙设置，确保端口18000开放
-3. 验证IP地址是否正确
-
-### 数据不显示
-1. 检查Sensor Logger应用是否正在发送数据
-2. 查看服务器控制台输出是否有错误信息
-3. 尝试刷新仪表板页面
-
-### 性能优化
-- 服务器会自动限制内存中存储的数据量（最多100条记录）
-- 所有历史数据都保存在JSON文件中，可以离线分析
-
-## 参考资料
-
-- [Sensor Logger官方网站](https://www.tszheichoi.com/sensorlogger)
-- [Awesome Sensor Logger项目](https://github.com/tszheichoi/awesome-sensor-logger)
-- [传感器数据格式文档](https://github.com/tszheichoi/awesome-sensor-logger/blob/main/UNITS.md)
-
-## 测试
-
-项目包含完整的测试套件，涵盖了核心功能和HTTP处理程序。
+## 🧪 测试
 
 ### 运行测试
 
 ```bash
-# 运行所有测试
-go test -v
+# 基本测试
+make test           # Linux/macOS
+make.bat test       # Windows
 
-# 运行测试覆盖率分析
-go test -cover
+# 覆盖率测试
+make test-coverage  # Linux/macOS
+make.bat test-coverage  # Windows
 
-# 运行基准测试
-go test -bench=. -benchmem
+# 竞态检测
+make test-race      # Linux/macOS
 
-# 运行竞态检测
-go test -race
-
-# Windows用户可以使用批处理脚本
-run_tests.bat
+# 性能测试
+make benchmark      # Linux/macOS
 ```
 
 ### 测试覆盖率
@@ -346,14 +405,7 @@ run_tests.bat
 - ✅ 真实数据文件解析
 - ✅ 配置管理功能
 - ✅ 数据库操作功能
-
-### 测试文件
-
-- `main_test.go` - 核心功能测试
-- `handlers_test.go` - HTTP处理程序测试
-- `config_test.go` - 配置功能测试
-- `database_test.go` - 数据库功能测试
-- `temp/` - 真实传感器数据文件用于测试
+- ✅ 日志系统功能
 
 ### 基准测试结果
 
@@ -365,6 +417,130 @@ BenchmarkParseSensorMessage-16    181866    6088 ns/op    1705 B/op    37 allocs
 - 每次操作分配约 1.7KB 内存
 - 内存分配次数为 37 次
 
-## 许可证
+## 🎨 界面特色
+
+### 响应式设计
+- 适配桌面和移动设备
+- 现代化的卡片布局
+- 清晰的数据分组
+
+### 实时更新
+- 30秒自动刷新
+- 实时统计信息
+- 最新数据优先显示
+
+### 用户友好
+- 完全中文界面
+- 直观的数据展示
+- 详细的使用说明
+
+## 🔧 开发工具
+
+### 热重载开发
+
+```bash
+# 安装开发工具
+make dev-setup
+
+# 启动热重载
+make dev-watch
+
+# 或者手动安装Air
+go install github.com/cosmtrek/air@latest
+air
+```
+
+### 代码质量
+
+```bash
+# 格式化代码
+make fmt
+
+# 静态检查
+make vet
+
+# Lint检查
+make lint
+
+# 运行所有检查
+make check
+```
+
+## 📦 构建和部署
+
+### 版本信息
+
+构建时会自动注入版本信息：
+- Version: 版本号
+- BuildTime: 构建时间
+- GitCommit: Git提交哈希
+- GitBranch: Git分支名
+
+### 多平台构建
+
+```bash
+# 构建当前平台
+make build
+
+# 构建所有平台
+make build-all
+
+# 构建特定平台
+make build-linux
+make build-windows
+make build-darwin
+```
+
+### 系统安装
+
+```bash
+# 安装到系统（Linux/macOS）
+make install
+
+# 卸载
+make uninstall
+```
+
+## 🚨 故障排除
+
+### 连接问题
+1. 确保手机和服务器在同一网络中
+2. 检查防火墙设置，确保端口18000开放
+3. 验证IP地址是否正确
+
+### 数据不显示
+1. 检查Sensor Logger应用是否正在发送数据
+2. 查看服务器控制台输出是否有错误信息
+3. 尝试刷新仪表板页面
+
+### Windows环境问题
+1. 使用PowerShell而不是CMD
+2. 设置正确的代码页：`chcp 65001`
+3. 使用Git Bash或WSL
+
+### 构建失败
+1. 检查Go版本是否为1.21+
+2. 确保依赖正确下载：`go mod download`
+3. 运行代码检查：`make check`
+
+## 🎯 项目亮点
+
+1. **完整性**: 支持Sensor Logger应用的所有常见传感器类型
+2. **易用性**: 中文界面，人类友好的数据展示
+3. **实时性**: 实时接收和展示传感器数据
+4. **可扩展性**: 易于添加新的传感器类型支持
+5. **稳定性**: 容错设计，即使数据解析失败也不影响接收
+6. **性能**: 高效的Go语言实现，支持并发处理
+7. **现代化**: 使用Go 1.21+特性，结构化日志，完整的构建系统
+8. **部署友好**: 支持Docker容器化部署，多环境配置
+
+## 📚 参考资料
+
+- [Sensor Logger官方网站](https://www.tszheichoi.com/sensorlogger)
+- [Awesome Sensor Logger项目](https://github.com/tszheichoi/awesome-sensor-logger)
+- [传感器数据格式文档](https://github.com/tszheichoi/awesome-sensor-logger/blob/main/UNITS.md)
+- [构建说明文档](BUILD.md)
+
+## 📄 许可证
 
 本项目基于MIT许可证开源。 
