@@ -99,4 +99,10 @@ core.*
 # Application specific
 sensor-logger-server
 sensor-logger-server.exe
-sensor-logger-server-* 
+sensor-logger-server-*
+sensor-logger-server_unix
+sensor-logger-server_darwin
+
+# Air live reload
+tmp/
+build-errors.log 

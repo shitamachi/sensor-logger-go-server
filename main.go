@@ -9,6 +9,14 @@ import (
 	"syscall"
 )
 
+// 版本信息变量（通过构建时注入）
+var (
+	Version   = "dev"
+	BuildTime = "unknown"
+	GitCommit = "unknown"
+	GitBranch = "unknown"
+)
+
 func main() {
 	// 加载配置
 	if err := LoadConfig(); err != nil {
@@ -43,6 +51,10 @@ func main() {
 
 	// 显示启动信息
 	fmt.Println("=== 传感器日志服务器 ===")
+	fmt.Printf("版本: %s\n", Version)
+	fmt.Printf("构建时间: %s\n", BuildTime)
+	fmt.Printf("Git提交: %s\n", GitCommit)
+	fmt.Printf("Git分支: %s\n", GitBranch)
 	fmt.Printf("服务器启动在端口 %s\n", AppConfig.ServerPort)
 
 	// 显示配置信息
