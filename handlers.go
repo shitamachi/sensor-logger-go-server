@@ -14,7 +14,7 @@ import (
 )
 
 // 全局变量用于存储解析后的数据
-var parsedDataStore []ParsedSensorData
+var parsedDataStore = NewThreadSafeDataStore()
 
 // handleRoot 处理根路径请求
 func handleRoot(w http.ResponseWriter, r *http.Request) {
@@ -169,7 +169,7 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 		CurrentTime:     time.Now().Format("2006-01-02 15:04:05"),
 		Environment:     AppConfig.Environment,
 		LogLevel:        AppConfig.LogLevel,
-		MemoryDataCount: len(parsedDataStore),
+		MemoryDataCount: parsedDataStore.Len(),
 		MaxDataStore:    AppConfig.MaxDataStore,
 		FileLogStatus:   map[bool]string{true: "启用", false: "禁用"}[AppConfig.EnableFileLog],
 		ServerAddr:      GetServerAddr(),
@@ -240,12 +240,10 @@ func handleSensorData(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 存储解析后的数据到内存（用于快速访问）
-	parsedDataStore = append(parsedDataStore, *parsedData)
+	parsedDataStore.Add(*parsedData)
 
 	// 只保留最近的配置数量条记录
-	if len(parsedDataStore) > AppConfig.MaxDataStore {
-		parsedDataStore = parsedDataStore[len(parsedDataStore)-AppConfig.MaxDataStore:]
-	}
+	parsedDataStore.TrimToSize(AppConfig.MaxDataStore)
 
 	// 保存原始数据到文件
 	if AppConfig.EnableFileLog {
@@ -510,26 +508,29 @@ func handleDashboard(w http.ResponseWriter, r *http.Request) {
 // prepareDashboardData 准备仪表板数据
 func prepareDashboardData() DashboardData {
 	data := DashboardData{
-		TotalMessages:   len(parsedDataStore),
+		TotalMessages:   parsedDataStore.Len(),
 		TotalReadings:   0,
 		SensorTypeCount: 0,
 		DeviceCount:     0,
-		HasData:         len(parsedDataStore) > 0,
+		HasData:         !parsedDataStore.IsEmpty(),
 		LatestData:      []HumanReadableSensorData{},
 	}
 
-	if len(parsedDataStore) == 0 {
+	if parsedDataStore.IsEmpty() {
 		return data
 	}
+
+	// 获取所有数据用于计算统计信息
+	allData := parsedDataStore.GetAllForRead()
 
 	// 计算统计信息
 	sensorTypes := make(map[string]bool)
 	devices := make(map[string]bool)
 
-	for _, parsedData := range parsedDataStore {
+	for _, parsedData := range allData {
 		data.TotalReadings += parsedData.TotalReadings
 		devices[parsedData.DeviceID] = true
-		
+
 		for _, sensorType := range parsedData.SensorTypes {
 			sensorTypes[sensorType] = true
 		}
@@ -539,13 +540,12 @@ func prepareDashboardData() DashboardData {
 	data.DeviceCount = len(devices)
 
 	// 获取最新数据的前20条读数
-	if len(parsedDataStore) > 0 {
-		latestParsedData := parsedDataStore[len(parsedDataStore)-1]
+	if latestData, exists := parsedDataStore.GetLatestOne(); exists {
 		maxReadings := 20
-		if len(latestParsedData.ParsedReadings) < maxReadings {
-			maxReadings = len(latestParsedData.ParsedReadings)
+		if len(latestData.ParsedReadings) < maxReadings {
+			maxReadings = len(latestData.ParsedReadings)
 		}
-		data.LatestData = latestParsedData.ParsedReadings[:maxReadings]
+		data.LatestData = latestData.ParsedReadings[:maxReadings]
 	}
 
 	return data
@@ -557,7 +557,9 @@ func handleAPIData(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	if err := json.NewEncoder(w).Encode(parsedDataStore); err != nil {
+	data := parsedDataStore.Get()
+
+	if err := json.NewEncoder(w).Encode(data); err != nil {
 		LogError("API数据编码", err)
 		http.Error(w, "数据编码失败", http.StatusInternalServerError)
 		LogAPIRequest(r.Method, r.URL.Path, r.RemoteAddr, http.StatusInternalServerError, time.Since(startTime))

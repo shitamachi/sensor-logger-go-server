@@ -244,7 +244,7 @@ func TestParseToHumanReadable(t *testing.T) {
 // TestParseRealSensorData 测试真实传感器数据文件解析
 func TestParseRealSensorData(t *testing.T) {
 	// 测试小文件
-	testFile := "temp/sensor_data_20250706_003018.json"
+	testFile := "testdata/sensor_data_small.json"
 	data, err := os.ReadFile(testFile)
 	if err != nil {
 		t.Skipf("跳过测试，文件不存在: %s", testFile)
@@ -271,6 +271,41 @@ func TestParseRealSensorData(t *testing.T) {
 	}
 
 	t.Logf("成功解析真实数据: 消息ID=%d, 设备ID=%s, 总读数=%d, 传感器类型=%v",
+		parsed.MessageID, parsed.DeviceID, parsed.TotalReadings, parsed.SensorTypes)
+}
+
+// TestParseMediumSensorData 测试中型传感器数据文件解析
+func TestParseMediumSensorData(t *testing.T) {
+	testFile := "testdata/sensor_data_medium.json"
+	data, err := os.ReadFile(testFile)
+	if err != nil {
+		t.Skipf("跳过测试，文件不存在: %s", testFile)
+		return
+	}
+
+	parsed, err := parseSensorMessage(data)
+	if err != nil {
+		t.Fatalf("解析中型数据失败: %v", err)
+	}
+
+	// 验证基本结构
+	if parsed.MessageID != 2 {
+		t.Errorf("期望消息ID为2，实际为%d", parsed.MessageID)
+	}
+	if parsed.DeviceID != "mock-device-12345" {
+		t.Errorf("期望设备ID为mock-device-12345，实际为%s", parsed.DeviceID)
+	}
+	if parsed.TotalReadings != 8 {
+		t.Errorf("期望总读数为8，实际为%d", parsed.TotalReadings)
+	}
+
+	// 验证传感器类型
+	expectedSensors := []string{"accelerometer", "gravity", "gyroscope", "magnetometer", "compass", "pedometer", "magnetometeruncalibrated", "orientation"}
+	if len(parsed.SensorTypes) != len(expectedSensors) {
+		t.Errorf("期望传感器类型数量为%d，实际为%d", len(expectedSensors), len(parsed.SensorTypes))
+	}
+
+	t.Logf("成功解析中型数据: 消息ID=%d, 设备ID=%s, 总读数=%d, 传感器类型=%v",
 		parsed.MessageID, parsed.DeviceID, parsed.TotalReadings, parsed.SensorTypes)
 }
 
@@ -333,7 +368,7 @@ func TestLargeSensorDataFile(t *testing.T) {
 		t.Skip("跳过大文件测试（使用 -short 标志）")
 	}
 
-	testFile := "temp/sensor_data_20250705_233948.json"
+	testFile := "testdata/sensor_data_large.json"
 	file, err := os.Open(testFile)
 	if err != nil {
 		t.Skipf("跳过测试，文件不存在: %s", testFile)

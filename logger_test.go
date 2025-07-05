@@ -40,7 +40,7 @@ func TestGetLogConfig(t *testing.T) {
 	AppConfig = Config{
 		LogLevel:      "debug",
 		EnableFileLog: true,
-		DataDir:       "./test_data",
+		DataDir:       "./testdata",
 	}
 
 	config := GetLogConfig()

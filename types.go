@@ -1,6 +1,8 @@
 package main
 
-import "time"
+import (
+	"time"
+)
 
 // SensorMessage 表示完整的传感器消息结构
 type SensorMessage struct {
@@ -63,3 +65,5 @@ type DashboardData struct {
 	DeviceCount     int
 	LatestData      []HumanReadableSensorData
 }
+
+

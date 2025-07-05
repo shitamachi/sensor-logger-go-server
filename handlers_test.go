@@ -16,7 +16,7 @@ func init() {
 	// 初始化应用配置
 	AppConfig = Config{
 		ServerPort:    "18000",
-		DataDir:       "./test_data",
+		DataDir:       "./testdata",
 		EnableFileLog: true,
 		EnableLogging: true,
 		LogLevel:      "info",
