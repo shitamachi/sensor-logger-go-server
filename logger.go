@@ -206,7 +206,7 @@ func GetLogConfig() LogConfig {
 
 // LogSensorData 记录传感器数据接收日志
 func LogSensorData(messageID int64, deviceID, sessionID string, sensorCount int) {
-	Logger.Info("传感器数据接收",
+	Logger.Debug("传感器数据接收",
 		slog.Int64("message_id", messageID),
 		slog.String("device_id", deviceID),
 		slog.String("session_id", sessionID),
