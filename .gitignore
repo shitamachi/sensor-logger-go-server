@@ -1,0 +1,102 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows specific
+desktop.ini
+
+# Log files
+*.log
+logs/
+*.log.*
+
+# Data files and directories
+data/
+temp/
+sensor_data_*.json
+*.json.bak
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Coverage files
+coverage
+coverage.out
+coverage.html
+
+# Build artifacts
+dist/
+build/
+bin/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Configuration files with sensitive data
+config.json
+config.yaml
+config.yml
+
+# Docker volumes
+docker-data/
+mongodb-data/
+
+# Development tools
+.air.toml
+air_tmp/
+
+# Profiling files
+*.prof
+*.pprof
+
+# Memory dumps
+*.mem
+
+# Core dumps
+core.*
+
+# Application specific
+sensor-logger-server
+sensor-logger-server.exe
+sensor-logger-server-* 
