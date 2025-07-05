@@ -417,6 +417,88 @@ BenchmarkParseSensorMessage-16    181866    6088 ns/op    1705 B/op    37 allocs
 - 每次操作分配约 1.7KB 内存
 - 内存分配次数为 37 次
 
+## 🚀 GitHub Actions CI/CD
+
+项目配置了完整的GitHub Actions CI/CD工作流，支持自动化测试和Docker镜像构建推送。
+
+### 📋 工作流概述
+
+CI/CD工作流包含以下阶段：
+1. **🧪 测试阶段** - 运行Go测试套件，代码质量检查
+2. **🐳 构建和推送** - 构建Docker镜像并推送到私有镜像仓库
+
+### 🎯 触发条件
+
+- **Push到主分支** (`main`, `master`)
+- **创建标签** (格式：`v*`，如 `v1.0.0`)
+- **Pull Request** 到主分支（仅运行测试，不构建推送）
+- **手动触发** - 在GitHub Actions页面点击 "Run workflow" 按钮
+
+### 🔐 配置要求
+
+#### 必需的GitHub Secrets
+
+在GitHub仓库的 **Settings > Secrets and variables > Actions** 中配置：
+
+```
+DOCKER_USERNAME     # Docker镜像仓库用户名
+DOCKER_PASSWORD     # Docker镜像仓库密码或访问令牌
+```
+
+#### 可选的GitHub Variables
+
+```
+DOCKER_REGISTRY     # 私有镜像仓库地址（如：harbor.company.com）
+```
+
+如果不设置，将使用默认值 `your-private-registry.com`
+
+### 🏷️ 镜像标签策略
+
+- **标签推送**: `your-registry.com/sensor-logger-server:v1.0.0`
+- **分支推送**: `your-registry.com/sensor-logger-server:v2024.07.06-1a2b3c4`
+- **主分支**: 额外添加 `latest` 标签
+
+### 🔧 支持的镜像仓库
+
+- **Harbor私有仓库**: `harbor.company.com`
+- **阿里云容器镜像服务**: `registry.cn-hangzhou.aliyuncs.com`
+- **腾讯云容器镜像服务**: `ccr.ccs.tencentyun.com`
+- **华为云容器镜像服务**: `swr.cn-north-1.myhuaweicloud.com`
+
+### 📊 监控和日志
+
+- 在GitHub Actions页面查看工作流运行状态
+- 查看详细日志和测试结果
+- 获取构建版本和镜像标签信息
+
+### 🔒 安全最佳实践
+
+1. **定期轮换密钥**：定期更新Docker密码
+2. **最小权限原则**：只给必要的权限
+3. **使用专用账户**：为CI/CD创建专用的Docker账户
+4. **监控访问日志**：定期检查镜像仓库的访问日志
+5. **环境隔离**：生产环境使用独立的镜像仓库
+
+### 🔍 故障排除
+
+#### 常见问题：
+
+**Docker登录失败**
+- 检查 `DOCKER_USERNAME` 和 `DOCKER_PASSWORD` 是否正确设置
+
+**镜像拉取失败**
+- 确认镜像仓库地址正确
+- 检查Docker登录凭据是否有效
+- 确认镜像仓库权限设置
+
+**测试失败**
+- 检查代码是否有语法错误
+- 确保所有依赖正确安装
+- 查看测试日志获取详细错误信息
+
+详细配置说明请参考 [GitHub Actions设置文档](GITHUB_ACTIONS_SETUP.md)。
+
 ## 🎨 界面特色
 
 ### 响应式设计
