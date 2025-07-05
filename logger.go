@@ -216,7 +216,7 @@ func LogSensorData(messageID int64, deviceID, sessionID string, sensorCount int)
 // LogDatabaseOperation 记录数据库操作日志
 func LogDatabaseOperation(operation string, success bool, recordCount int, duration time.Duration) {
 	if success {
-		Logger.Info("数据库操作成功",
+		Logger.Debug("数据库操作成功",
 			slog.String("operation", operation),
 			slog.Int("records", recordCount),
 			slog.Duration("duration", duration))
@@ -230,7 +230,7 @@ func LogDatabaseOperation(operation string, success bool, recordCount int, durat
 
 // LogAPIRequest 记录API请求日志
 func LogAPIRequest(method, path, remoteAddr string, statusCode int, duration time.Duration) {
-	Logger.Info("API请求",
+	Logger.Debug("API请求",
 		slog.String("method", method),
 		slog.String("path", path),
 		slog.String("remote_addr", remoteAddr),
