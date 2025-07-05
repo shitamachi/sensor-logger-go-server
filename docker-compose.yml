@@ -23,7 +23,7 @@ services:
       - DATA_DIR=/app/data
       - ENABLE_FILE_LOG=true
     volumes:
-      - sensor_data:/app/data
+      - sensor_messages:/app/data
       - sensor_logs:/app/data/logs
     depends_on:
       - mongodb
@@ -48,13 +48,9 @@ services:
       - sensor-network
 
 volumes:
-  sensor_data:
+  mongo_data:
     driver: local
-  sensor_logs:
-    driver: local
-  mongodb_data:
-    driver: local
-  mongodb_config:
+  sensor_messages:
     driver: local
 
 networks:

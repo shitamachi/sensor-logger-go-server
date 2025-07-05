@@ -44,7 +44,7 @@ logs/
 # Data files and directories
 data/
 temp/
-sensor_data_*.json
+sensor_messages_*.json
 *.json.bak
 
 # Environment files

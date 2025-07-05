@@ -23,7 +23,7 @@ services:
       - DATA_DIR=/app/data
       - ENABLE_FILE_LOG=true
     volumes:
-      - sensor_data_dev:/app/data
+      - sensor_messages_dev:/app/data
       - sensor_logs_dev:/app/data/logs
       - ./:/app/src  # 挂载源代码用于开发
     depends_on:
@@ -49,7 +49,10 @@ services:
       - sensor-network-dev
 
 volumes:
-  sensor_data_dev:
+  mongo_data_dev:
+    driver: local
+  sensor_messages_dev:
+    driver: local
     driver: local
   sensor_logs_dev:
     driver: local

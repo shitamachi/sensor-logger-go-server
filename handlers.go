@@ -230,12 +230,12 @@ func handleSensorData(w http.ResponseWriter, r *http.Request) {
 	if mongoClient != nil {
 		dbStart := time.Now()
 		if err := SaveSensorData(parsedData); err != nil {
-			LogDatabaseOperation("save_sensor_data", false, parsedData.TotalReadings, time.Since(dbStart))
+			LogDatabaseOperation("save_sensor_messages", false, parsedData.TotalReadings, time.Since(dbStart))
 			LogError("保存到MongoDB", err,
 				slog.String("device_id", parsedData.DeviceID),
 				slog.Int64("message_id", parsedData.MessageID))
 		} else {
-			LogDatabaseOperation("save_sensor_data", true, parsedData.TotalReadings, time.Since(dbStart))
+			LogDatabaseOperation("save_sensor_messages", true, parsedData.TotalReadings, time.Since(dbStart))
 		}
 	}
 
@@ -272,7 +272,7 @@ func saveToFile(data []byte, timestamp time.Time) error {
 	}
 
 	// 生成文件名
-	filename := fmt.Sprintf("sensor_data_%s.json", timestamp.Format("20060102_150405"))
+	filename := fmt.Sprintf("sensor_messages_%s.json", timestamp.Format("20060102_150405"))
 	filepath := fmt.Sprintf("%s/%s", AppConfig.DataDir, filename)
 
 	// 写入文件
@@ -300,7 +300,7 @@ func displayParsedData(data *ParsedSensorData) {
 
 	// 显示文件保存信息
 	if AppConfig.EnableFileLog {
-		filename := fmt.Sprintf("sensor_data_%s.json", data.ReceivedAt.Format("20060102_150405"))
+		filename := fmt.Sprintf("sensor_messages_%s.json", data.ReceivedAt.Format("20060102_150405"))
 		fmt.Printf("数据已保存到文件: %s/%s\n", AppConfig.DataDir, filename)
 	}
 
@@ -591,7 +591,7 @@ func handleDBData(w http.ResponseWriter, r *http.Request) {
 	dbStart := time.Now()
 	data, err := GetSensorDataFromDB(limit, deviceID, sensorType)
 	if err != nil {
-		LogDatabaseOperation("get_sensor_data", false, 0, time.Since(dbStart))
+		LogDatabaseOperation("get_sensor_messages", false, 0, time.Since(dbStart))
 		LogError("数据库查询", err,
 			slog.String("device", deviceID),
 			slog.String("sensor", sensorType),
@@ -601,7 +601,7 @@ func handleDBData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	LogDatabaseOperation("get_sensor_data", true, len(data), time.Since(dbStart))
+	LogDatabaseOperation("get_sensor_messages", true, len(data), time.Since(dbStart))
 
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		LogError("数据库API编码", err)

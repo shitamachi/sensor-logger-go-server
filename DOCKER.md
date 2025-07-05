@@ -69,7 +69,7 @@
 
 ### 数据卷
 
-- `sensor_data` - 应用程序数据存储
+- `sensor_messages` - 应用程序数据存储
 - `sensor_logs` - 日志文件存储
 - `mongodb_data` - MongoDB 数据存储
 - `mongodb_config` - MongoDB 配置存储

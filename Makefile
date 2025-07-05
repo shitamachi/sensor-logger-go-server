@@ -129,7 +129,7 @@ clean: ## 清理构建文件
 clean-data: ## 清理数据文件
 	rm -rf data/
 	rm -rf temp/
-	rm -f sensor_data_*.json
+	rm -f sensor_messages_*.json
 
 # 运行
 .PHONY: run

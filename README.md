@@ -250,9 +250,9 @@ sensor-logger-server/
 ├── .gitattributes                   # Git属性文件
 ├── data/                            # 数据存储目录
 │   ├── logs/                        # 日志文件目录
-│   └── sensor_data_*.json           # 传感器数据文件
+│   └── sensor_messages_*.json           # 传感器数据文件
 └── temp/                            # 测试数据目录
-    └── sensor_data_*.json           # 测试用传感器数据
+    └── sensor_messages_*.json           # 测试用传感器数据
 ```
 
 ## 🔌 API接口
@@ -359,7 +359,7 @@ GET /api/db/data?limit=100&device=test-device&sensor=accelerometer
 ### 文件存储
 - 所有接收到的原始数据都会保存为JSON文件（可通过`ENABLE_FILE_LOG`配置）
 - 文件存储在`DATA_DIR`目录中（默认为`./data`）
-- 文件命名格式: `sensor_data_YYYYMMDD_HHMMSS.json`
+- 文件命名格式: `sensor_messages_YYYYMMDD_HHMMSS.json`
 
 ### 内存存储
 - 解析后的数据存储在内存中，支持最近N条记录的快速访问（可通过`MAX_DATA_STORE`配置，默认100条）
@@ -368,7 +368,7 @@ GET /api/db/data?limit=100&device=test-device&sensor=accelerometer
 ### MongoDB存储
 - 支持将数据自动存储到MongoDB数据库（通过`MONGO_URI`等配置项设置）
 - 数据库结构：
-  - `sensor_data` 集合：存储传感器读数数据
+  - `sensor_messages` 集合：存储传感器读数数据
   - `device_info` 集合：存储设备信息和统计数据
 - 自动创建索引以优化查询性能
 - 支持设备信息的自动更新和统计

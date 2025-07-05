@@ -244,7 +244,7 @@ func TestParseToHumanReadable(t *testing.T) {
 // TestParseRealSensorData 测试真实传感器数据文件解析
 func TestParseRealSensorData(t *testing.T) {
 	// 测试小文件
-	testFile := "testdata/sensor_data_small.json"
+	testFile := "testdata/sensor_messages_small.json"
 	data, err := os.ReadFile(testFile)
 	if err != nil {
 		t.Skipf("跳过测试，文件不存在: %s", testFile)
@@ -276,7 +276,7 @@ func TestParseRealSensorData(t *testing.T) {
 
 // TestParseMediumSensorData 测试中型传感器数据文件解析
 func TestParseMediumSensorData(t *testing.T) {
-	testFile := "testdata/sensor_data_medium.json"
+	testFile := "testdata/sensor_messages_medium.json"
 	data, err := os.ReadFile(testFile)
 	if err != nil {
 		t.Skipf("跳过测试，文件不存在: %s", testFile)
@@ -368,7 +368,7 @@ func TestLargeSensorDataFile(t *testing.T) {
 		t.Skip("跳过大文件测试（使用 -short 标志）")
 	}
 
-	testFile := "testdata/sensor_data_large.json"
+	testFile := "testdata/sensor_messages_large.json"
 	file, err := os.Open(testFile)
 	if err != nil {
 		t.Skipf("跳过测试，文件不存在: %s", testFile)
